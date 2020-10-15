@@ -22,36 +22,35 @@ int main(int argc, char* argv[])
   
   //processes command line arguments
   //options are -h, -n x, -s x, -t x
-  while((opt = getopt(argc, argv, ":hn:s:t:")) != -1)
+  while((opt = getopt(argc, argv, ":hc:l:t:")) != -1)
   {
     switch(opt)
     {
       case 'h':
         printf("Usage:\n");
-        printf("master [-n x] [-s x] [-t time] infile\n");
-        printf("\t-n x\tIndicate the maximum total of child processes master will ");
-        printf("\n\t\tever create. (Default 4)\n");
-        printf("\t-s x\tIndicate the number of children allowed to exist in the ");
-        printf("\n\t\tsystem at the same time. (Default 2)\n");
-        printf("\t-t time\tThe time in seconds after which the process will ");
-        printf("\n\t\tterminate, even if it has not finished. (Default 100)\n");
+        printf("master [-c x] [-l fielname] [-t time] infile\n");
+        printf("\t-c x\tIndicate the maximum total of child processes master will ");
+        printf("\n\t\tspawn. (Default 5)\n");
+        printf("\t-l x\tspecifies the name of the log file.\n");
+        printf("\t-t time\tdetermines the time in seconds when the master will ");
+        printf("\n\t\tterminate itself and all children (default 20).\n");
         printf("\tinfile\tInput file containing strings to be tested.\n");
         break;
-      case 'n':
-        child_total_max = atoi(optarg);
-        printf("called with n option %d value\n", child_total_max);
-        break;
-      case 's':
-        child_concurrent_max = atoi(optarg);
-        if(child_concurrent_max >= 20)
+      case 'c':
+        child_max = atoi(optarg);
+        if(child_max >= 20)
         {
           printf("no more than 19 children may exist at once\n");
-          printf("you attempted %d\n", child_concurrent_max);
-          child_concurrent_max = 19;
-          printf("value has been defaulted to %d...\n", child_concurrent_max);
+          printf("you attempted %d\n", child_max);
+          child_max = 19;
+          printf("value has been defaulted to %d...\n", child_max);
         }
         else
-          printf("called with s option %d value\n", child_concurrent_max);
+          printf("called with c option %d value\n", child_max);
+        break;
+      case 'l':
+        log_filename = optarg;
+        printf("called with l option %d value\n", log_filename);
         break;
       case 't':
         countdown = atoi(optarg);
