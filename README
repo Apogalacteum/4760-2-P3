@@ -1,0 +1,19 @@
+4760 - Project 2
+~~~~~~~~~~~~~~~~~~~~~~~~~
+How to Run:
+"make" to compile and create master process
+"./master [options] infile"
+"make palin" to compile and create palin test process
+"./palin" to run palindrome test program
+"make clean" remove executables
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Difficulties:
+ - time
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Notes:
+Log file for version control is in log.txt.
+This program is not complete. I did what I could with the little time that I had. 
+I emailed you to explain my situation and I appreciate the extra time you gave me
+but I couldn't complete it. I'm nodding off into my textbook as I try to learn about
+share memory. I have to wake up for work in about 5 hours. I'm gonna bow out for now.
+I'm going to try to finish it anyway in the off chance that you meant Tuesday next week.
