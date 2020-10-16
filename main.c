@@ -16,12 +16,12 @@
 int main(int argc, char* argv[])
 {
   int opt;
-  int child_total_max = 4;
-  int child_concurrent_max = 2;
-  int countdown = 100;
+  int child_max = 5;
+  int countdown = 20;
+  char * log_file = "logfile.txt";
   
   //processes command line arguments
-  //options are -h, -n x, -s x, -t x
+  //options are -h, -c x, -l file, -t time
   while((opt = getopt(argc, argv, ":hc:l:t:")) != -1)
   {
     switch(opt)
@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
         printf("\t-l x\tspecifies the name of the log file.\n");
         printf("\t-t time\tdetermines the time in seconds when the master will ");
         printf("\n\t\tterminate itself and all children (default 20).\n");
-        printf("\tinfile\tInput file containing strings to be tested.\n");
         break;
       case 'c':
         child_max = atoi(optarg);
