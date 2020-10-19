@@ -1,20 +1,14 @@
-master: main.o
+oss: main.o
 	cc -o master main.o
 	
-palin: palindrome.o
-	cc -o palin palindrome.o
-	
-trial: trial.o
-	cc -o trial trial.o
+chproc: chproc.o
+	cc -o chproc chproc.o
 
 main.o: main.c
 	cc -c main.c
-
-palindrome.o: palindrome.c
-	cc -c palindrome.c
 	
-trial.o: trial.c
-	cc -c trial.c
+chproc.o: chproc.c
+	cc -c chproc.c
   
 clean :
-	rm master palin trial main.o palindrome.o trial.o
+	rm oss chproc main.o chproc.o

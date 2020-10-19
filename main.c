@@ -1,8 +1,8 @@
 /* Author: Alexander Hughey
  * CS4760 F2020
- * Project 3 - Palindromes
- * main driver for project 2
- * invoked as "master"
+ * Project 3 - OS Shell
+ * main driver for project 3
+ * invoked as "oss"
  */
  
 #include <stdio.h>

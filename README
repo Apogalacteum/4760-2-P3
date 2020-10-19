@@ -1,15 +1,17 @@
 4760 - Project 3
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 How to Run:
-"make" to compile and create master process
-"./master [options] infile"
-"make palin" to compile and create palin test process
-"./palin" to run palindrome test program
+"make" to compile and create OS shell
+"./oss [options]"
+"make chproc" to compile and create child process
 "make clean" remove executables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Difficulties:
  - time
+ - 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Notes:
-Log file for version control is in log.txt.
+Log file for version control is in gitlog.txt
+Log file for processes is in log.txt
+
 
