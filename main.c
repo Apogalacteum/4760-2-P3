@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
   for(; optind < argc; optind++)
   { 
     char * test_str_file = "bb.bb";
-    test_str_file = argv[optind];     
+    test_str_file = argv[optind];
     printf("extra arguments: %s\n", test_str_file);  
   }//end of for loop
   
