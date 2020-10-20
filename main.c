@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <sys/shm.h>
 
 int main(int argc, char* argv[])
 {
