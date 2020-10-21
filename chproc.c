@@ -4,6 +4,19 @@
  * Child process for project 3
  */
  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <signal.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
+#include <sys/msg.h> 
+
+
 int main()
 {
   //loopflag = 0;
@@ -18,7 +31,7 @@ int main()
   //      if( shmPID == 0 )
   //        shmPID = PID
   //        loopflag = 1
-  perror("yo");
+  perror("test");
 
   return 0;
 }

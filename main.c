@@ -15,6 +15,8 @@
 #include <sys/types.h>
 #include <sys/ipc.h> 
 #include <sys/shm.h> 
+#include <sys/msg.h> 
+#include <sys/wait.h>
 
 int main(int argc, char* argv[])
 {
@@ -158,7 +160,7 @@ int main(int argc, char* argv[])
   int checkpoint = 0; //holds ns since last process termination
   int sec_temp = 0; //holds seconds from shared memory clock
   
-  /*while( checkpoint < 2000000000 && child_tot < 100 && sec_temp < countdown)
+  while( checkpoint < 2000000000 && child_tot < 100 && sec_temp < countdown)
   {
     //{critical section}
     //  increment clock
@@ -166,18 +168,19 @@ int main(int argc, char* argv[])
     //{critical section}
     //  check shmPID
     //  if( shmPID != 0)
+        {
     //    open log file
     //    write shmPID and time
     //    close log file
     //    shmPID = 0
     //    child_tot++
-    //    if(fork() == 0)//child enter
+          if(fork() == 0)//child enter
           { 
             execvp(args[0],args);
             return 0;
-          }//end of if
-    //  
-  }//end of while loop L1*/
-  
+          }//end of if  
+        }
+  }//end of while loop L1
+  wait();
   return 0;
 }//end of main
