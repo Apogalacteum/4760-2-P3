@@ -2,9 +2,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 How to Run:
 "make" to compile and create OS shell
-"./oss [options]"
-"make chproc" to compile and create child process
-"make clean" remove executables
+"make user" to compile and create child process
+"./oss [options]" to run
+"make clean" to remove executables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Difficulties:
  - time
