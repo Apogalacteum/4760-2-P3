@@ -17,6 +17,10 @@
 #include <sys/shm.h> 
 #include <sys/msg.h> 
 #include <sys/wait.h>
+#include <pthread.h>
+#include <signal.h>
+
+//void sighandler(int);
 
 int main(int argc, char* argv[])
 {
@@ -25,6 +29,8 @@ int main(int argc, char* argv[])
   int child_max = 5;
   int countdown = 20;
   char * log_file = "logfile.txt";
+  pthread_mutex_t myMutex = PTHREAD_MUTEX_INITIALIZER;
+  //signal(SIGINT, sighandler);
   
   //processes command line arguments
   //options are -h, -c x, -l file, -t time
@@ -82,6 +88,12 @@ int main(int argc, char* argv[])
     test_str_file = argv[optind];
     printf("extra argument: %s\n", test_str_file);  
   }//end of for loop
+  
+  // clearing/creating log file
+  FILE *fp1; 
+  fp1 = fopen(log_file, "w");
+  fprintf(fp1, "");
+  fclose(fp1);
   
   // create shared memory for clock.
   // seconds, nanosecond, shmPID (used by child processes to indicate when they have
@@ -254,29 +266,74 @@ int main(int argc, char* argv[])
   int checkpoint = 0; //holds ns since last process termination
   int sec_temp = 0; //holds seconds from shared memory clock
   
-  /*
+  
   while( checkpoint < 2000000000 && child_tot < 100 && sec_temp < countdown)
   {
-    //{critical section}
-    //  increment clock
-    //
-    //{critical section}
-    //  check shmPID
-    //  if( shmPID != 0)
-        {
-    //    open log file
-    //    write shmPID and time
-    //    close log file
-    //    shmPID = 0
-    //    child_tot++
-          if(fork() == 0)//child enter
-          { 
-            execvp(args[0],args);
-            return 0;
-          }//end of if  
-        }
+    pthread_mutex_lock( &myMutex );
+    //////////////////////////////////////////////////////////////////////
+    //////////////////////ATTACH//AND//DETACH//BLOCK//////////////////////
+    //////////////////////////////////////////////////////////////////////
+    if((shm_sec = shmat( sec_shmid, NULL, 0)) == (int *) -1)
+    {
+      perror("failed to attach shared memory for clock seconds");
+      return -1;
+    }//end of if
+    if((shm_nan = shmat( ns_shmid, NULL, 0)) == (int *) -1)
+    {
+      perror("failed to attach shared memory for clock nanoseconds");
+      return -1;
+    }//end of if
+    if((shm_PID = shmat( shmPID_shmid, NULL, 0)) == (int *) -1)
+    {
+      perror("failed to attach shared memory for shmPID");
+      return -1;
+    }//end of if
+    
+    sec_temp = *shm_sec;
+    *shm_nan = *shm_nan + 100;
+    if(*shm_nan >= 1000000000)
+    {
+      *shm_sec = *shm_sec + 1;
+      *shm_nan = 0;
+    }
+    if(*shm_PID > 0)
+    {
+      FILE *fp; 
+      fp = fopen(log_file, "w");
+      fprintf(fp, "Child pid %d is terminating at system clock time ", *shm_PID);
+      fprintf(fp, "%d:%d", *shm_sec, *shm_nan);
+      fclose(fp);
+      *shm_PID = 0;
+      child_tot++;
+      if(fork() == 0)//child enter
+      { 
+        execvp(args[0],args);
+        return 0;
+      }//end of if
+    }
+    
+    //detaching shared memory segments
+    if((shmdt(shm_sec)) == -1)
+    {
+      perror("failed to detach shared memory for clock seconds");
+      return -1;
+    }//end of if
+    if((shmdt(shm_nan)) == -1)
+    {
+      perror("failed to detach shared memory for clock nanoseconds");
+      return -1;
+    }//end of if
+    if((shmdt(shm_PID)) == -1)
+    {
+      perror("failed to detach shared memory for shmPID");
+      return -1;
+    }//end of if
+    //////////////////////////////////////////////////////////////////////
+    ////////////////////////////END//OF//BLOCK////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    pthread_mutex_unlock( &myMutex );
   }//end of while loop L1
-  */
+  
   wait(NULL);
   
   ////////////////destroy shm
@@ -302,3 +359,46 @@ int main(int argc, char* argv[])
   
   return 0;
 }//end of main
+
+/*
+void sighandler(int signum) 
+{
+  printf("Caught signal %d, exiting...\n", signum);
+  
+  //////////////////detaching shared memory segments
+  if((shmdt(shm_sec)) == -1)
+  {
+    perror("failed to detach shared memory for clock seconds");
+    return;
+  }//end of if
+  if((shmdt(shm_nan)) == -1)
+  {
+    perror("failed to detach shared memory for clock nanoseconds");
+    return;
+  }//end of if
+  if((shmdt(shm_PID)) == -1)
+  {
+    perror("failed to detach shared memory for shmPID");
+    return;
+  }//end of if
+  
+  //////////////////destroying shared memory segments
+  if((shmctl( sec_shmid, IPC_RMID, NULL)) == -1)
+  {
+    perror("failed to destroy shared memory for sec");
+    return;
+  }//end of if
+  if((shmctl( ns_shmid, IPC_RMID, NULL)) == -1)
+  {
+    perror("failed to destroy shared memory for nanosec");
+    return;
+  }//end of if
+  if((shmctl( shmPID_shmid, IPC_RMID, NULL)) == -1)
+  {
+    perror("failed to destroy shared memory for shmPID");
+    return;
+  }//end of if
+  
+  exit(1);
+}
+*/
