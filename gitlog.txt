@@ -1,0 +1,53 @@
+commit 2a0b8bd0d104b87f2f3f6649265b4411c9bc9ad9
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Tue Oct 20 23:53:58 2020 -0500
+
+    progress
+
+commit 42e6a495c8f2ba32d70bd4c33058e93f8513df08
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Tue Oct 20 22:37:20 2020 -0500
+
+    fork, exec, shm, logic structures
+
+commit c5c0134dbce5713939967a653d550271198302e5
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Tue Oct 20 16:19:46 2020 -0500
+
+    small improvements
+
+commit cd39c635fd2768142fc9a7c86b23534470cdeab2
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Mon Oct 19 21:04:21 2020 -0500
+
+    fixed current bugs
+
+commit e6b01752b59d63b0f4a6d4fb27f635bd4c7123fd
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Mon Oct 19 00:46:39 2020 -0500
+
+    figuring out shared memory clock
+
+commit 6d7ac056d1858240f800b6794744563980c61604
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Sun Oct 18 19:56:47 2020 -0500
+
+    working on child process
+
+commit c79134fe4bc3065b69ec3113049ba9a55baec7b6
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Fri Oct 16 08:41:06 2020 -0500
+
+    current bugs fixed
+
+commit ebba035966076b78244e415b64a5b0faa6ae32f1
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Thu Oct 15 08:58:22 2020 -0500
+
+    command option parsing
+
+commit 08daa24f84418d0f28aafecea46ba695128a41cc
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Thu Oct 15 08:08:14 2020 -0500
+
+    setting up

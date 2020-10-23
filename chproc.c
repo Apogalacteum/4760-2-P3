@@ -17,10 +17,22 @@
 #include <sys/msg.h> 
 
 
-int main()
+int main(int argc, char *argv[])
 {
-  //loopflag = 0;
-  //lifetime = rand int 1-1000000
+  
+  printf("In user\n");
+  int sec_shmid = atoi(argv[1]);
+  int ns_shmid = atoi(argv[2]);
+  int shmPID_shmid = atoi(argv[3]);
+  printf("have values\nsec_shmid:%d\nns_shmid:%d\n", sec_shmid, ns_shmid);
+  printf("PID_shmid:%d\n", shmPID_shmid);
+  
+  //generating random number based on process id
+  //because I couldn't figure out how else to do it
+  pid_t procid = getpid();
+  int loopflag = 0;
+  srand(procid);
+  int lifetime = (rand()%1000000);
   //{critical section}
   //  start = time (ns + s*1000000000)
   //
@@ -31,7 +43,66 @@ int main()
   //      if( shmPID == 0 )
   //        shmPID = PID
   //        loopflag = 1
-  perror("test");
+  printf("test\tnum = %d\tseed = %d\n", lifetime, procid);
+  
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  
+  //attaching and setting values for shared memory clock
+  int *shm_sec;
+  int *shm_nan;
+  int *shm_PID;
+  
+  if((shm_sec = shmat( sec_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory in user for clock seconds");
+    return -1;
+  }//end of if
+  
+  if((shm_nan = shmat( ns_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for clock nanoseconds");
+    return -1;
+  }//end of if
+  
+  if((shm_PID = shmat( shmPID_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for shmPID");
+    return -1;
+  }//end of if
+  
+  *shm_sec = 30;
+  *shm_nan = 40;
+  *shm_PID = 50;
+  
+  printf("2. shm sec in user = %d\n", *shm_sec);
+  printf("2. shm nan in user = %d\n", *shm_nan);
+  printf("2. shm PID in user = %d\n", *shm_PID);
+  
+  //detaching shared memory segments
+  
+  if((shmdt(shm_sec)) == -1)
+  {
+    perror("failed to detach shared memory for clock seconds");
+    return -1;
+  }//end of if
+  
+  if((shmdt(shm_nan)) == -1)
+  {
+    perror("failed to detach shared memory for clock nanoseconds");
+    return -1;
+  }//end of if
+  
+  if((shmdt(shm_PID)) == -1)
+  {
+    perror("failed to detach shared memory for shmPID");
+    return -1;
+  }//end of if
+  
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
 
   return 0;
 }

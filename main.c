@@ -103,50 +103,92 @@ int main(int argc, char* argv[])
   shmPID_key = 707070;
   size = sizeof(int);
   
-  if((sec_shmid = shmget( sec_key, size, IPC_CREAT)) == -1)
+  //creating shared memory for seconds, nanosecond, PID flag
+  if((sec_shmid = shmget( sec_key, size, 0666 | IPC_CREAT)) == -1)
   {
     perror("failed to create shared memory for clock seconds");
     return -1;
   }//end of if
-  
-  if((ns_shmid = shmget( ns_key, size, IPC_CREAT)) == -1)
+  if((ns_shmid = shmget( ns_key, size, 0666 | IPC_CREAT)) == -1)
   {
     perror("failed to create shared memory for clock nanoseconds");
     return -1;
   }//end of if
-  
-  if((shmPID_shmid = shmget( shmPID_key, size, IPC_CREAT)) == -1)
+  if((shmPID_shmid = shmget( shmPID_key, size, 0666 | IPC_CREAT)) == -1)
   {
     perror("failed to create shared memory for shmPID");
     return -1;
   }//end of if
   
-  ////////////////destroy shm
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////ATTACH//AND//DETACH//BLOCK//////////////////////
+  //////////////////////////////////////////////////////////////////////
+  int *shm_sec;
+  int *shm_nan;
+  int *shm_PID;
   
-  if((shmctl( sec_shmid, IPC_RMID, NULL)) == -1)
+  if((shm_sec = shmat( sec_shmid, NULL, 0)) == (int *) -1)
   {
-    perror("failed to destroy shared memory for sec");
+    perror("failed to attach shared memory for clock seconds");
+    return -1;
+  }//end of if
+  if((shm_nan = shmat( ns_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for clock nanoseconds");
+    return -1;
+  }//end of if
+  if((shm_PID = shmat( shmPID_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for shmPID");
     return -1;
   }//end of if
   
-  if((shmctl( ns_shmid, IPC_RMID, NULL)) == -1)
-  {
-    perror("failed to destroy shared memory for nanosec");
-    return -1;
-  }//end of if
+  //setting values
+  *shm_sec = 0;
+  *shm_nan = 0;
+  *shm_PID = 0;
   
-  if((shmctl( shmPID_shmid, IPC_RMID, NULL)) == -1)
+  /*debug
+  printf("1. shm sec in main = %d\n", *shm_sec);
+  printf("1. shm nan in main = %d\n", *shm_nan);
+  printf("1. shm PID in main = %d\n", *shm_PID);*/
+  
+  //detaching shared memory segments
+  if((shmdt(shm_sec)) == -1)
   {
-    perror("failed to destroy shared memory for shmPID");
+    perror("failed to detach shared memory for clock seconds");
     return -1;
   }//end of if
+  if((shmdt(shm_nan)) == -1)
+  {
+    perror("failed to detach shared memory for clock nanoseconds");
+    return -1;
+  }//end of if
+  if((shmdt(shm_PID)) == -1)
+  {
+    perror("failed to detach shared memory for shmPID");
+    return -1;
+  }//end of if
+  //////////////////////////////////////////////////////////////////////
+  ////////////////////////////END//OF//BLOCK////////////////////////////
+  //////////////////////////////////////////////////////////////////////
   
   //array of character arrays used as an argument for exec
-  char *args[]={"./user",NULL};
+  /*debug
+  printf("sending values\nsec_shmid:%d\nns_shmid:%d\n", sec_shmid, ns_shmid);
+  printf("PID_shmid:%d\n", shmPID_shmid);*/
+  char sec_id_str[50];  
+  char nan_id_str[50];
+  char PID_id_str[50];
+  sprintf(sec_id_str, "%d", sec_shmid);  
+  sprintf(nan_id_str, "%d", ns_shmid); 
+  sprintf(PID_id_str, "%d", shmPID_shmid); 
+  
+  char *args[]={"./user", sec_id_str, nan_id_str, PID_id_str,NULL};
   //iterator
   int it = 0;
   //launches initial children
-  for( it = 1; it <= child_max ; it++ )
+  /*for( it = 1; it <= child_max ; it++ )
   {
     if(fork() == 0)//child enter
     { 
@@ -154,12 +196,65 @@ int main(int argc, char* argv[])
       return 0;
     }//end of if
   }//end of for loop L1
+  */
   
+  /*debug
+  if(fork() == 0)
+  {
+    execvp(args[0], args);
+    return 0;
+  }
+  wait(NULL);*/
+  
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////ATTACH//AND//DETACH//BLOCK//////////////////////
+  //////////////////////////////////////////////////////////////////////
+  if((shm_sec = shmat( sec_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for clock seconds");
+    return -1;
+  }//end of if
+  if((shm_nan = shmat( ns_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for clock nanoseconds");
+    return -1;
+  }//end of if
+  if((shm_PID = shmat( shmPID_shmid, NULL, 0)) == (int *) -1)
+  {
+    perror("failed to attach shared memory for shmPID");
+    return -1;
+  }//end of if
+  
+  /*debug
+  printf("3. shm sec in main = %d\n", *shm_sec);
+  printf("3. shm nan in main = %d\n", *shm_nan);
+  printf("3. shm PID in main = %d\n", *shm_PID);*/
+  
+  //detaching shared memory segments
+  if((shmdt(shm_sec)) == -1)
+  {
+    perror("failed to detach shared memory for clock seconds");
+    return -1;
+  }//end of if
+  if((shmdt(shm_nan)) == -1)
+  {
+    perror("failed to detach shared memory for clock nanoseconds");
+    return -1;
+  }//end of if
+  if((shmdt(shm_PID)) == -1)
+  {
+    perror("failed to detach shared memory for shmPID");
+    return -1;
+  }//end of if
+  //////////////////////////////////////////////////////////////////////
+  ////////////////////////////END//OF//BLOCK////////////////////////////
+  //////////////////////////////////////////////////////////////////////
   
   int child_tot = child_max; //total number of child processes
   int checkpoint = 0; //holds ns since last process termination
   int sec_temp = 0; //holds seconds from shared memory clock
   
+  /*
   while( checkpoint < 2000000000 && child_tot < 100 && sec_temp < countdown)
   {
     //{critical section}
@@ -181,6 +276,29 @@ int main(int argc, char* argv[])
           }//end of if  
         }
   }//end of while loop L1
-  wait();
+  */
+  wait(NULL);
+  
+  ////////////////destroy shm
+  
+  if((shmctl( sec_shmid, IPC_RMID, NULL)) == -1)
+  {
+    perror("failed to destroy shared memory for sec");
+    return -1;
+  }//end of if
+  
+  if((shmctl( ns_shmid, IPC_RMID, NULL)) == -1)
+  {
+    perror("failed to destroy shared memory for nanosec");
+    return -1;
+  }//end of if
+  
+  if((shmctl( shmPID_shmid, IPC_RMID, NULL)) == -1)
+  {
+    perror("failed to destroy shared memory for shmPID");
+    return -1;
+  }//end of if
+  
+  
   return 0;
 }//end of main
