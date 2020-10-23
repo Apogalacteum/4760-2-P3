@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     {
       case 'h':
         printf("Usage:\n");
-        printf("master [-c x] [-l fielname] [-t time] infile\n");
+        printf("./oss [-c x] [-l fielname] [-t time]\n");
         printf("\t-c x\tindicate the maximum total of child processes master will ");
         printf("\n\t\tspawn. (Default 5)\n");
         printf("\t-l x\tspecifies the name of the log file.\n");
@@ -200,7 +200,7 @@ int main(int argc, char* argv[])
   //iterator
   int it = 0;
   //launches initial children
-  /*for( it = 1; it <= child_max ; it++ )
+  for( it = 1; it <= child_max ; it++ )
   {
     if(fork() == 0)//child enter
     { 
@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
       return 0;
     }//end of if
   }//end of for loop L1
-  */
+  
   
   /*debug
   if(fork() == 0)
@@ -269,7 +269,7 @@ int main(int argc, char* argv[])
   
   while( checkpoint < 2000000000 && child_tot < 100 && sec_temp < countdown)
   {
-    pthread_mutex_lock( &myMutex );
+    //pthread_mutex_lock( &myMutex );
     //////////////////////////////////////////////////////////////////////
     //////////////////////ATTACH//AND//DETACH//BLOCK//////////////////////
     //////////////////////////////////////////////////////////////////////
@@ -291,6 +291,7 @@ int main(int argc, char* argv[])
     
     sec_temp = *shm_sec;
     *shm_nan = *shm_nan + 100;
+    printf("In loop: %d sec_temp\n", sec_temp);
     if(*shm_nan >= 1000000000)
     {
       *shm_sec = *shm_sec + 1;
@@ -331,7 +332,8 @@ int main(int argc, char* argv[])
     //////////////////////////////////////////////////////////////////////
     ////////////////////////////END//OF//BLOCK////////////////////////////
     //////////////////////////////////////////////////////////////////////
-    pthread_mutex_unlock( &myMutex );
+    sleep(1);
+    //pthread_mutex_unlock( &myMutex );
   }//end of while loop L1
   
   wait(NULL);

@@ -1,3 +1,15 @@
+commit c7468a5d146cdcec7700c522ea247bc5124dc77a
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Thu Oct 22 23:59:06 2020 -0500
+
+    submitting again
+
+commit b7ded0ce6c32b34f80ad4b7c429d1521b68595e4
+Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
+Date:   Thu Oct 22 22:28:49 2020 -0500
+
+    what did i do holy moly
+
 commit 2a0b8bd0d104b87f2f3f6649265b4411c9bc9ad9
 Author: Alexander Hughey <hughey@hoare7.cs.umsl.edu>
 Date:   Tue Oct 20 23:53:58 2020 -0500

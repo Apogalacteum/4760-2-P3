@@ -23,7 +23,7 @@
 int main(int argc, char *argv[])
 {
   
-  //printf("In user\n");
+  printf("In user\n");
   int sec_shmid = atoi(argv[1]);
   int ns_shmid = atoi(argv[2]);
   int shmPID_shmid = atoi(argv[3]);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
-  pthread_mutex_lock( &myMutex );
+  //pthread_mutex_lock( &myMutex );
   //attaching and setting values for shared memory clock
   int *shm_sec;
   int *shm_nan;
@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
   printf("2. shm nan in user = %d\n", *shm_nan);
   printf("2. shm PID in user = %d\n", *shm_PID);*/
   
+  *shm_PID = 50;
+  
   //detaching shared memory segments
   if((shmdt(shm_sec)) == -1)
   {
@@ -111,7 +113,7 @@ int main(int argc, char *argv[])
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
-  pthread_mutex_unlock( &myMutex );
+  //pthread_mutex_unlock( &myMutex );
   
   while( loopflag == 0 )
   {
